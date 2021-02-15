@@ -191,6 +191,34 @@ module Namae
             expect(parser.parse!('Bernado Franecki Ph.D.')[0].values_at(:given, :family, :title)).to eq(['Bernado', 'Franecki', 'Ph.D.'])
             #expect(parser.parse!('Bernado Franecki, Ph.D.')[0].values_at(:given, :family, :title)).to eq(['Bernado', 'Franecki', 'Ph.D.'])
           end
+
+          it 'parses consecutive titles in display order' do
+            expect(parser.parse!('Lt. Col. Bernado Franecki')[0].values_at(:given, :family, :title)).to eq(['Bernado', 'Franecki', 'Lt. Col.'])
+          end
+
+          it 'parses common capitalized particles as the family name in display order' do
+            expect(parser.parse!('Carlos De Silva')[0].values_at(:given, :family, :particle)).to eq(['Carlos', 'De Silva', nil])
+          end
+
+          it 'parses common capitalized particles with punctuation as the family name in display order' do
+            expect(parser.parse!('Matt St. Hilaire')[0].values_at(:given, :family, :particle)).to eq(['Matt', 'St. Hilaire', nil])
+          end
+
+          it 'parses common lowercase particles as a particle, not family name in display order' do
+            expect(parser.parse!('Carlos de Silva')[0].values_at(:given, :family, :particle)).to eq(['Carlos', 'Silva', 'de'])
+          end
+
+          it 'parses common capitalized particles as the family name in sort order' do
+            expect(parser.parse!('De Silva, Carlos')[0].values_at(:given, :family, :particle)).to eq(['Carlos', 'De Silva', nil])
+          end
+
+          it 'parses common lowercase particles as a particle, not family name in sort order' do
+            expect(parser.parse!('de Silva, Carlos')[0].values_at(:given, :family, :particle)).to eq(['Carlos', 'Silva', 'de'])
+          end
+
+          it 'parses common capitalized particles with punctuation as the family name in display order' do
+            expect(parser.parse!('St. Hilaire, Matt')[0].values_at(:given, :family, :particle)).to eq(['Matt', 'St. Hilaire', nil])
+          end
         end
       end
 
